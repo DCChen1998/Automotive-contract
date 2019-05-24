@@ -5,7 +5,7 @@ import "./CarHelper.sol";
 contract CarRenter is CarHelper, CarOwnership {
     uint16 basic_renttime = 1;
     
-    function Create_token(string memory _name, uint16 _age) public { //called by car wallet
+    function Create_Vtoken(string memory _name, uint16 _age) public { //called by car wallet
         Add_Car(_name, _age, msg.sender);
     }
     
