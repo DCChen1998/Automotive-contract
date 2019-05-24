@@ -4,7 +4,7 @@ import "./erc721.sol";
 
 contract CarHelper is CarBase {
     modifier OnlyOwnerOf(uint _id) {
-        require(cars[_id].owner == msg.sender);
+        require(cars[_id].owner == msg.sender, "Not the owner!");
         _;
     }
     
@@ -42,7 +42,7 @@ contract CarOwnership is CarBase, ERC721 {
     }
 
     function transferFrom(address _from, address _to, uint _tokenId) public {
-        require(msg.sender == _from && _from == cars[_tokenId].owner);
+        require(msg.sender == _from && _from == cars[_tokenId].owner, "Failed to tranfer!");
 
         address payable addr_to = address(uint160(_to));
         /*address payable addr_from = address(uint160(_from));*/

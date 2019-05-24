@@ -45,7 +45,7 @@ contract CarBase is Ownable{
     function Is_Rented(uint _id) public view returns (bool){
         //return cars[_id].is_rented;
         /*return vtokens[_id].car.is_rented;*/
-        return cars[_id].owner != cars[_id].renter;
+        return (cars[_id].owner != cars[_id].renter);
     }
 /*
     function Rent_Car(uint _id) public payable {

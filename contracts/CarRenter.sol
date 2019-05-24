@@ -10,7 +10,7 @@ contract CarRenter is CarHelper, CarOwnership {
     }
     
     function Rent_Car(uint _tokenId) public payable { //called by user
-        require(Is_Rented(_tokenId) == false && msg.value >= 1 ether);
+        require(Is_Rented(_tokenId) == false && msg.value >= 1 ether, "Failed to rent a car!");
         cars[_tokenId].rent_time = now + basic_renttime;
         approve(msg.sender, _tokenId);
         cars[_tokenId].owner.transfer(1 ether); //for bail
@@ -18,7 +18,7 @@ contract CarRenter is CarHelper, CarOwnership {
     }
 
     function Return_Car(uint _tokenId, uint _oil, uint16 crashes) public payable {
-        require(msg.sender == cars[_tokenId].renter);
+        require(msg.sender == cars[_tokenId].renter, "Failed to return a car!");
         uint to_owner;
         uint to_renter; //return the bail
 
