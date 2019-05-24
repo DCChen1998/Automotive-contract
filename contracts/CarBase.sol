@@ -26,7 +26,7 @@ contract CarBase is Ownable{
 
     Car[] cars;
 
-    function Add_Car(string memory _name, uint16 _age, address payable _owner) public { // call by car wallet
+    function Add_Car(string memory _name, uint16 _age, address payable _owner) internal { // call by car wallet
         Car memory newcar = Car(_name, _owner, _owner, now, 0, _age, 10, 0);
         uint id = cars.push(newcar) - 1;
         cars[id].id = id;
