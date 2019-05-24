@@ -1,80 +1,41 @@
 pragma solidity ^0.5.0;
-import "./ownable.sol";
-import "./SafeMath.sol";
 
-contract CarRenter is Ownable{
+import "./CarHelper.sol";
 
-    using SafeMath for uint256;
-    using SafeMath16 for uint16;
-
-    event RentCar(uint16 _id, address _renter);
-    event NewVtoken(uint16 _id, string _name);
-
-    mapping (uint16 => address) car2owner;
-
-    struct VToken {
-        Car car;
-        address payable renter;
-        address payable owner;
+contract CarRenter is CarHelper, CarOwnership {
+    uint16 basic_renttime = 1;
+    
+    function Create_token(string memory _name, uint16 _age) public { //called by car wallet
+        Add_Car(_name, _age, msg.sender);
     }
     
-    struct Car {
-        string name;
-        uint rent_time; // now + expected renting time
-        uint16 id;
-        uint16 age;
-        uint16 price;
-        uint16 crash_number;
-        bool is_rented;
-
+    function Rent_Car(uint _tokenId) public payable { //called by user
+        require(Is_Rented(_tokenId) == false && msg.value >= 1 ether);
+        cars[_tokenId].rent_time = now + basic_renttime;
+        approve(msg.sender, _tokenId);
+        cars[_tokenId].owner.transfer(1 ether); //for bail
+        emit RentCar(_tokenId, msg.sender);
     }
 
-    VToken[] vtokens;
-    uint64 basic_renttime = 1;
+    function Return_Car(uint _tokenId, uint _oil, uint16 crashes) public payable {
+        require(msg.sender == cars[_tokenId].renter);
+        uint to_owner;
+        uint to_renter; //return the bail
 
-    function Create_Vtoken(string memory _name, uint16 _age) internal { // call by car wallet
-        Car memory newcar = Car(_name, now, 0, _age, 10, 0, false);
-        VToken memory vtoken = VToken(newcar, msg.sender, msg.sender);
-        uint16 id = uint16(vtokens.push(vtoken) - 1);// add to array and update id value
-        vtokens[id].car.id = id;
-        emit NewVtoken(id, _name);
-    }
-
-    function Is_Rented(uint16 _id) public view returns (bool){
-        //return cars[_id].is_rented;
-        vtokens[_id].car.is_rented;
-    }
-
-    function Rent_Car(uint16 _id) public payable {
-        require(Is_Rented(_id) == false && msg.value >= 1 ether);
-
-        vtokens[_id].renter = msg.sender;
-        vtokens[_id].car.rent_time = now + basic_renttime * 60;
-        vtokens[_id].car.is_rented = true;
-
-        emit RentCar(_id, msg.sender);
-    }
-
-    function Return_Car(uint16 _id, uint _oil) public payable {
-        require(Is_Rented(_id) && msg.sender == vtokens[_id].renter);
-        uint toOwner;
-        uint toRenter;
-
-        if (vtokens[_id].car.rent_time >= now) {
-            toOwner = vtokens[_id].car.price + _oil * 50;
-            toRenter = 1;
-            vtokens[_id].owner.transfer(toOwner * 1 szabo);
-            vtokens[_id].renter.transfer(toRenter * 1 ether);
+        cars[_tokenId].renter = cars[_tokenId].owner;
+        if (now <= cars[_tokenId].rent_time && crashes == 0) { // no crash and return on time
+            to_renter = 1;
+            to_owner = cars[_tokenId].price + _oil * 50;
+            msg.sender.transfer(1 ether);
+            cars[_tokenId].owner.transfer(to_owner * 1 szabo);
         }
         else {
-            toOwner = vtokens[_id].car.price + _oil * 50;
-            toRenter = 0; //penalty for delay
-            vtokens[_id].owner.transfer(toOwner * 1 szabo);
+            to_owner = cars[_tokenId].price + _oil * 50;
+            if (crashes != 0){
+                to_owner += crashes * 10;
+            }
+            cars[_tokenId].owner.transfer(to_owner * 1 szabo);
         }
-
-        vtokens[_id].car.is_rented = false;
-        vtokens[_id].renter = vtokens[_id].owner;
-
     }
 
 }
