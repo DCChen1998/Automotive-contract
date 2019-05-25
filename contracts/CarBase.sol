@@ -22,12 +22,15 @@ contract CarBase is Ownable{
         uint16 age;
         uint16 price;
         uint16 crash_number;
+        uint16 rate_sum;
+        uint16 rate_num;
     }
 
     Car[] cars;
 
     function Add_Car(string memory _name, uint16 _age, address payable _owner) internal { // call by car wallet
-        Car memory newcar = Car(_name, _owner, _owner, now, 0, _age, 10, 0);
+        
+        Car memory newcar = Car(_name, _owner, _owner, now, 0, _age, 10, 0, 0, 0);
         uint id = cars.push(newcar) - 1;
         cars[id].id = id;
         car2owner[id] = _owner;
@@ -46,6 +49,27 @@ contract CarBase is Ownable{
         //return cars[_id].is_rented;
         /*return vtokens[_id].car.is_rented;*/
         return (cars[_id].owner != cars[_id].renter);
+    }
+
+    /*function Get_All_Cars() external view returns (Car[] memory cars2) {
+        cars2 = cars;
+        return cars;
+    }*/
+    function Get_All_Cars() external view returns(uint16[] memory, address[] memory, uint16[] memory, uint16[] memory){
+        uint16[] memory ages = new uint16[](cars.length);
+        uint16[] memory rates_sum = new uint16[](cars.length);
+        uint16[] memory rates_num = new uint16[](cars.length);
+        address[] memory owners = new address[](cars.length);
+
+        for (uint i = 0; i < cars.length; i++){
+            Car memory temp = cars[i];
+            ages[i] = temp.age;
+            rates_sum[i] = temp.rate_sum;
+            rates_num[i] = temp.rate_num;
+            owners[i] = temp.owner;
+
+        }
+        return (ages, owners, rates_sum, rates_num);
     }
 /*
     function Rent_Car(uint _id) public payable {

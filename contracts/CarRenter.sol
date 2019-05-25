@@ -17,12 +17,14 @@ contract CarRenter is CarHelper, CarOwnership {
         emit RentCar(_tokenId, msg.sender);
     }
 
-    function Return_Car(uint _tokenId, uint _oil, uint16 crashes) public payable {
+    function Return_Car(uint _tokenId, uint _oil, uint16 crashes, uint16 rate) public payable {
         require(msg.sender == cars[_tokenId].renter, "Failed to return a car!");
         uint to_owner;
         uint to_renter; //return the bail
 
         cars[_tokenId].renter = cars[_tokenId].owner;
+        cars[_tokenId].rate_sum += rate;
+        cars[_tokenId].rate_num++;
         if (now <= cars[_tokenId].rent_time && crashes == 0) { // no crash and return on time
             to_renter = 1;
             to_owner = cars[_tokenId].price + _oil * 50;
