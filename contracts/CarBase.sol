@@ -71,6 +71,14 @@ contract CarBase is Ownable{
         }
         return (ages, owners, rates_sum, rates_num);
     }
+
+    function Calculate_Price(uint _tokenId, uint _oil, uint16 crashes) internal view returns(uint) {
+        uint to_owner = cars[_tokenId].price + _oil * 50;
+        if (crashes > 0) {
+            to_owner += 50 * crashes;
+        }
+        return to_owner;
+    }
 /*
     function Rent_Car(uint _id) public payable {
         require(Is_Rented(_id) == false && msg.value == 1 ether);
