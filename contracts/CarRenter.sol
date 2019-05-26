@@ -27,6 +27,7 @@ contract CarRenter is CarHelper, CarOwnership {
         cars[_tokenId].rate_num++;
 
         to_owner = Calculate_Price(_tokenId, _oil, crashes);
+        emit Price(to_owner);
         return to_owner;
         /*
         if (now <= cars[_tokenId].rent_time && crashes == 0) { // no crash and return on time

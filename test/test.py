@@ -464,22 +464,22 @@ config = {
       "type": "function"
     }
   ],
-    "address": "0xe7a305f404827fcdb6357d6817a3c0b4159Cfd27",
+    "address": "0x6abf02023A05B19b3dDB488ACcc6cB8C5f963ad3",
 }
 
 web3 = Web3(HTTPProvider('http://localhost:8545'))
 owner = web3.eth.accounts[0]
 customer = web3.eth.accounts[1]
-contract_instance = web3.eth.contract(address=config['address'], abi=config['abi'],ContractFactoryClass=ConciseContract) 
+contract_instance = web3.eth.contract(address=config['address'], abi=config['abi']) 
 eth = Web3.toWei(1, 'ether')
 
 
 def Create_Vtoken(_name, _age):
-    transact_hash = contract_instance.Create_Vtoken(_name, _age, transact={'from': owner})
+    transact_hash = contract_instance.functions.Create_Vtoken(_name, _age).transact({'from': owner})
     return transact_hash
 
 def Rent_Car(_tokenId):
-    transact_hash = contract_instance.Rent_Car(_tokenId, transact={'from': customer, 'value': eth})
+    transact_hash = contract_instance.functions.Rent_Car(_tokenId).transact({'from': customer, 'value': eth})
     return transact_hash
 
 def Return_Car(_tokenId, _oil, crashes, rate):
@@ -488,26 +488,30 @@ def Return_Car(_tokenId, _oil, crashes, rate):
     if (crashes == 0):
        transact_hash2 = contract_instance.Return_Bail(_tokenId, transact={'from': owner, 'value': eth})
     '''
-    transact_hash = contract_instance.Return_Car(_tokenId, _oil, crashes, rate, transact={'from': customer})
+    transact_hash = contract_instance.functions.Return_Car(_tokenId, _oil, crashes, rate).transact({'from': customer})
     transact_receipt = web3.eth.getTransactionReceipt(transact_hash)
     logs = contract_instance.events.Price().processReceipt(transact_receipt)
-    print(logs)
+    print(logs[0]['args']['_price'])
+    price = logs[0]['args']['_price']
+    price = Web3.toWei(price, 'szabo') * 1000
+    transact_hash2 = contract_instance.functions.Pay_Owner(_tokenId).transact({'from': customer, 'value': price})
     #transact_hash2 = contract_instance.Pay_Owner(_tokenId, transact={'from': customer, 'value': price})
     
     return transact_hash
 
 def Is_Rented(_id):
-    transact_hash = contract_instance.Is_Rented(_id)#, transact={'from': owner}
+    transact_hash = contract_instance.functions.Is_Rented(_id).call() #, transact={'from': owner}
     return transact_hash
 
-print(Web3.fromWei(web3.eth.getBalance(owner), 'ether'))
-print(Web3.fromWei(web3.eth.getBalance(customer), 'ether'))
-Create_Vtoken('b', 2)
+#print(Web3.fromWei(web3.eth.getBalance(owner), 'ether'))
+#print(Web3.fromWei(web3.eth.getBalance(customer), 'ether'))
+#Create_Vtoken('b', 2)
 #Return_Car(0,1,1)
 Rent_Car(0)
 print(Web3.fromWei(web3.eth.getBalance(owner), 'ether'))
 print(Web3.fromWei(web3.eth.getBalance(customer), 'ether'))
 print(bool(Is_Rented(0)))
 Return_Car(0, 1, 1, 5)
+print(bool(Is_Rented(0)))
 print(Web3.fromWei(web3.eth.getBalance(owner), 'ether'))
 print(Web3.fromWei(web3.eth.getBalance(customer), 'ether'))

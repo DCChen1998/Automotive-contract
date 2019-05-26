@@ -9,6 +9,7 @@ contract CarBase is Ownable{
 
     event RentCar(uint _id, address _renter);
     event NewCar(uint _id, string _name);
+    event Price(uint _price);
 
     mapping (uint => address) car2owner;
     mapping (address => uint) ownerTokenCount;
