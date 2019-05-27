@@ -14,6 +14,7 @@ contract CarRenter is CarHelper, CarOwnership {
         cars[_tokenId].rent_time = now + basic_renttime;
         approve(msg.sender, _tokenId);
         cars[_tokenId].owner.transfer(1 ether); //for bail
+        AvailableCarNum--;
         emit RentCar(_tokenId, msg.sender);
     }
 
@@ -48,6 +49,7 @@ contract CarRenter is CarHelper, CarOwnership {
 
     function Pay_Owner(uint _tokenId) public payable {
         cars[_tokenId].owner.transfer(msg.value);
+        AvailableCarNum++;
     }
 
     function Return_Bail(uint _tokenId) public payable {

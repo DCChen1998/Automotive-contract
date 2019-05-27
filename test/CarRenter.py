@@ -39,7 +39,7 @@ def Return_Car(_tokenId, _oil, crashes, rate):
     #transact_hash = contract_instance.Return_Car(_tokenId, _oil, crashes, rate, transact={'from': customer})
     
     if (crashes == 0):
-       transact_hash2 = contract_instance.functions.Return_Bail(_tokenId).transact({'from': customer, 'value': eth})
+       transact_hash2 = contract_instance.functions.Return_Bail(_tokenId).transact({'from': owner, 'value': eth})
     
     transact_hash = contract_instance.functions.Return_Car(_tokenId, _oil, crashes, rate).transact({'from': customer})
     transact_receipt = web3.eth.getTransactionReceipt(transact_hash)
@@ -48,28 +48,48 @@ def Return_Car(_tokenId, _oil, crashes, rate):
     price = logs[0]['args']['_price']
     price = Web3.toWei(price, 'szabo') * 1000
     transact_hash2 = contract_instance.functions.Pay_Owner(_tokenId).transact({'from': customer, 'value': price})
-    #transact_hash2 = contract_instance.Pay_Owner(_tokenId, transact={'from': customer, 'value': price})
-    
+
     return transact_hash
 
 def Is_Rented(_id):
     transact_hash = contract_instance.functions.Is_Rented(_id).call() #, transact={'from': owner}
     return transact_hash
 
+def Get_Available_Car():
+	transact_hash = contract_instance.functions.Get_Available_Car_Num().call()
+	print(transact_hash)
+
+	transact_hash2 = contract_instance.functions.Get_All_Cars().transact({'from': customer})
+	transact_receipt = web3.eth.getTransactionReceipt(transact_hash2)
+	logs = contract_instance.events.AvailableCar().processReceipt(transact_receipt)
+
+	for i in range(transact_hash):
+		if logs[i]['args']['_rate_num'] == 0:
+			rate = 0
+		else:
+			rate = logs[i]['args']['_rate_sum'] / logs[i]['args']['_rate_num']
+		
+		print("ID: {0} Name: {1} Rate: {2}".format(logs[i]['args']['_id'], logs[i]['args']['_name'], rate))
+	
+
 print(Web3.fromWei(web3.eth.getBalance(owner), 'ether'))
 print(Web3.fromWei(web3.eth.getBalance(customer), 'ether'))
 print('create')
 Create_Vtoken('b', 2)
+Create_Vtoken('c', 10)
 print(Web3.fromWei(web3.eth.getBalance(owner), 'ether'))
 print(Web3.fromWei(web3.eth.getBalance(customer), 'ether'))
 print(bool(Is_Rented(0)))
+Get_Available_Car()
 print('rent')
 Rent_Car(0)
 print(Web3.fromWei(web3.eth.getBalance(owner), 'ether'))
 print(Web3.fromWei(web3.eth.getBalance(customer), 'ether'))
 print(bool(Is_Rented(0)))
+Get_Available_Car()
 print('return')
 Return_Car(0, 1, 0, 5)
 print(bool(Is_Rented(0)))
 print(Web3.fromWei(web3.eth.getBalance(owner), 'ether'))
 print(Web3.fromWei(web3.eth.getBalance(customer), 'ether'))
+Get_Available_Car()

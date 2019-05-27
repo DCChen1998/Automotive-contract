@@ -10,6 +10,8 @@ contract CarBase is Ownable{
     event RentCar(uint _id, address _renter);
     event NewCar(uint _id, string _name);
     event Price(uint _price);
+    //event AvailableNum(uint16 _num);
+    event AvailableCar(uint _id, string _name, uint16 _rate_sum, uint16 _rate_num);
 
     mapping (uint => address) car2owner;
     mapping (address => uint) ownerTokenCount;
@@ -28,6 +30,7 @@ contract CarBase is Ownable{
     }
 
     Car[] cars;
+    uint16 AvailableCarNum = 0;
 
     function Add_Car(string memory _name, uint16 _age, address payable _owner) internal { // call by car wallet
         
@@ -36,6 +39,7 @@ contract CarBase is Ownable{
         cars[id].id = id;
         car2owner[id] = _owner;
         ownerTokenCount[_owner]++;
+        AvailableCarNum++;
         emit NewCar(id, _name);
 
         /*Car memory newcar = Car(_name, now, 0, _age, 10, 0, false);
@@ -56,21 +60,18 @@ contract CarBase is Ownable{
         cars2 = cars;
         return cars;
     }*/
-    function Get_All_Cars() external view returns(uint16[] memory, address[] memory, uint16[] memory, uint16[] memory){
-        uint16[] memory ages = new uint16[](cars.length);
-        uint16[] memory rates_sum = new uint16[](cars.length);
-        uint16[] memory rates_num = new uint16[](cars.length);
-        address[] memory owners = new address[](cars.length);
 
+    function Get_Available_Car_Num() external view returns(uint16) {
+        //emit AvailableNum(AvailableCarNum);
+        return AvailableCarNum;
+    }
+
+    function Get_All_Cars() external {
         for (uint i = 0; i < cars.length; i++){
-            Car memory temp = cars[i];
-            ages[i] = temp.age;
-            rates_sum[i] = temp.rate_sum;
-            rates_num[i] = temp.rate_num;
-            owners[i] = temp.owner;
-
+            if (Is_Rented(i) == false) {
+                emit AvailableCar(i, cars[i].name, cars[i].rate_sum, cars[i].rate_num);
+            }
         }
-        return (ages, owners, rates_sum, rates_num);
     }
 
     function Calculate_Price(uint _tokenId, uint _oil, uint16 crashes) internal view returns(uint) {
