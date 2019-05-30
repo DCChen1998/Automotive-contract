@@ -11,12 +11,12 @@ with open('.././build/contracts/CarRenter.json' , 'r') as f:
 
 abi = data['abi']
 for dic in data['networks']:
-	#print(dic)
-	address = data['networks'][dic]['address']
+    #print(dic)
+    address = data['networks'][dic]['address']
 
 config = {
-	'abi': abi,
-	'address': address,
+    'abi': abi,
+    'address': address,
     
 }
 
@@ -56,22 +56,25 @@ def Is_Rented(_id):
     return transact_hash
 
 def Get_Available_Car():
-	transact_hash = contract_instance.functions.Get_Available_Car_Num().call()
-	print(transact_hash)
+    transact_hash = contract_instance.functions.Get_Available_Car_Num().call()
+    print(transact_hash)
 
-	transact_hash2 = contract_instance.functions.Get_All_Cars().transact({'from': customer})
-	transact_receipt = web3.eth.getTransactionReceipt(transact_hash2)
-	logs = contract_instance.events.AvailableCar().processReceipt(transact_receipt)
+    transact_hash2 = contract_instance.functions.Get_All_Cars().transact({'from': customer})
+    transact_receipt = web3.eth.getTransactionReceipt(transact_hash2)
+    logs = contract_instance.events.AvailableCar().processReceipt(transact_receipt)
 
-	for i in range(transact_hash):
-		if logs[i]['args']['_rate_num'] == 0:
-			rate = 0
-		else:
-			rate = logs[i]['args']['_rate_sum'] / logs[i]['args']['_rate_num']
-		
-		print("ID: {0} Name: {1} Rate: {2}".format(logs[i]['args']['_id'], logs[i]['args']['_name'], rate))
-	
-
+    car_list = []
+    for i in range(transact_hash):
+        if logs[i]['args']['_rate_num'] == 0:
+            rate = 0
+        else:
+            rate = logs[i]['args']['_rate_sum'] / logs[i]['args']['_rate_num']
+        
+        print("ID: {0} Name: {1} Rate: {2}".format(logs[i]['args']['_id'], logs[i]['args']['_name'], rate))
+        car_list.append({'ID': logs[i]['args']['_id'], 'Name': logs[i]['args']['_name'], 'Rate': rate})
+    return car_list
+    
+'''
 print(Web3.fromWei(web3.eth.getBalance(owner), 'ether'))
 print(Web3.fromWei(web3.eth.getBalance(customer), 'ether'))
 print('create')
@@ -93,3 +96,4 @@ print(bool(Is_Rented(0)))
 print(Web3.fromWei(web3.eth.getBalance(owner), 'ether'))
 print(Web3.fromWei(web3.eth.getBalance(customer), 'ether'))
 Get_Available_Car()
+'''
