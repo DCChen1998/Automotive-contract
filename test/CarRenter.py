@@ -26,9 +26,13 @@ customer = web3.eth.accounts[1]
 contract_instance = web3.eth.contract(address=config['address'], abi=config['abi']) 
 eth = Web3.toWei(1, 'ether')
 
-
+'''
 def Create_Vtoken(_name, _age):
     transact_hash = contract_instance.functions.Create_Vtoken(_name, _age).transact({'from': owner})
+    return transact_hash
+'''
+def Create_Vtoken(_name, _age, _owner):
+    transact_hash = contract_instance.functions.Create_Vtoken(_name, _age).transact({'from': _owner})
     return transact_hash
 
 def Rent_Car(_tokenId):
