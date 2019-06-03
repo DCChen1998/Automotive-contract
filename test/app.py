@@ -46,7 +46,7 @@ def new_user():
 def get_cars():
     return jsonify(CarRenter.Get_Available_Car(users[0]['account']))
 
-#use:curl -i -H "Content-Type: application/json" -X POST -d '{"name":"blabla", "age":87, "owner":"account[0]"}' http://localhost:5000/POST/car
+#use:curl -i -H "Content-Type: application/json" -X POST -d '{"name":"blabla", "age":87, "owner":"account"}' http://localhost:5000/POST/car
 @app.route('/POST/car', methods=['POST'])
 def create_vtoken():
     if not request.json or not 'name' in request.json or not 'age' in request.json or not 'owner' in request.json:
@@ -63,6 +63,7 @@ def create_vtoken():
         abort(401)
 
 #rent car
+#use:curl -i -H "Content-Type: application/json" -X POST -d '{"id":0, "account":"account"}' http://localhost:5000/PUT/car/rent
 @app.route('/PUT/car/rent', methods=['PUT'])
 def rent_car():
     if not request.json or not 'id' in request.json or not 'account' in request.json:
@@ -76,6 +77,7 @@ def rent_car():
         abort(404)
 
 #return car
+#use:curl -i -H "Content-Type: application/json" -X POST -d '{"id":0, "account":"account", "oil":10, "crashes":0, "rate":5}' http://localhost:5000/PUT/car/return
 @app.route('/PUT/car/return', methods=['PUT'])
 def return_car():
     if not request.json or not 'id' in request.json or not 'account' in request.json or not 'oil' in request.json or not 'crashes' in request.json or not 'rate' in request.json:
@@ -96,7 +98,7 @@ def return_car():
 def test():
     thing = {
         'is_rented': CarRenter.Is_Rented(0),
-        'Balance1': CarRenter.Get_Balance(1),
+        'Balance1': CarRenter.Get_Balance(1), #because account[0] is reserved
         'Balance2': CarRenter.Get_Balance(2)
     }
     return jsonify(thing)
