@@ -15,7 +15,7 @@ contract CarRenter is CarHelper, CarOwnership {
         approve(msg.sender, _tokenId);
         cars[_tokenId].owner.transfer(1 ether); //for bail
         AvailableCarNum--;
-        emit RentCar(_tokenId, msg.sender);
+        emit RentCar(_tokenId, msg.sender, cars[_tokenId].owner);
     }
 
     function Return_Car(uint _tokenId, uint _oil, uint16 crashes, uint16 rate) public /*payable*/ returns(uint) {

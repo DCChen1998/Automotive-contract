@@ -2,30 +2,104 @@ from flask import Flask, jsonify, request, abort
 import CarRenter
 
 app = Flask(__name__)
-users = [{'owner': CarRenter.owner, 'customer': CarRenter.customer}]
+#users = [{'owner': CarRenter.owner, 'customer': CarRenter.customer}]
+users = []
+count = 0 #the count of assigned ganache account
+reserve_account = {
+    'name': 'reserved',
+    'account': CarRenter.Get_Unused_Account(0)
+}
+users.append(reserve_account)
+
+# check if the account has been registered
+def is_registered(account):
+    for user in users:
+        if user['account'] == account:
+            return True
+        else:
+            continue
+    return False
 
 #get /user
 @app.route('/GET/users', methods=['GET'])
 def get_users():
     return jsonify(users)
 
+#add new user and assign an account to him
+#use:curl -i -H "Content-Type: application/json" -X POST -d '{"name":"blabla"}' http://localhost:5000/POST/user
+@app.route('/POST/user', methods=['POST'])
+def new_user():
+    if not request.json or not 'name' in request.json:
+        abort(400)
+    if len(users) >= 10:
+        abort(400)
+    user = {
+        'name': request.json['name'],
+        'account': CarRenter.Get_Unused_Account(len(users))
+    }
+    users.append(user)
+    return jsonify(user)
+    
+
 #get /car
 @app.route('/GET/cars', methods=['GET'])
 def get_cars():
-    return jsonify(CarRenter.Get_Available_Car())
+    return jsonify(CarRenter.Get_Available_Car(users[0]['account']))
 
 #use:curl -i -H "Content-Type: application/json" -X POST -d '{"name":"blabla", "age":87, "owner":"account[0]"}' http://localhost:5000/POST/car
 @app.route('/POST/car', methods=['POST'])
 def create_vtoken():
     if not request.json or not 'name' in request.json or not 'age' in request.json or not 'owner' in request.json:
         abort(400)
-    Car = {
-        'name': request.json['name'],
-        'age': request.json['age'],
-        'owner': request.json['owner']
+    if is_registered(request.json['owner']):
+        Car = {
+            'name': request.json['name'],
+            'age': request.json['age'],
+            'owner': request.json['owner']
+        }
+        CarRenter.Create_Vtoken(Car['name'], Car['age'], Car['owner'])
+        return jsonify(Car), 201
+    else:
+        abort(401)
+
+#rent car
+@app.route('/PUT/car/rent', methods=['PUT'])
+def rent_car():
+    if not request.json or not 'id' in request.json or not 'account' in request.json:
+        abort(400)
+    if is_registered(request.json['account']) and CarRenter.Is_Rented(request.json['id']) == False:
+        id = request.json['id']
+        account = request.json['account']
+        detail = CarRenter.Rent_Car(id, account)
+        return jsonify(detail), 201
+    else:
+        abort(404)
+
+#return car
+@app.route('/PUT/car/return', methods=['PUT'])
+def return_car():
+    if not request.json or not 'id' in request.json or not 'account' in request.json or not 'oil' in request.json or not 'crashes' in request.json or not 'rate' in request.json:
+        abort(400)
+    if is_registered(request.json['account']) and CarRenter.Is_Rented(request.json['id']) == True:
+        id = request.json['id']
+        account = request.json['account']
+        oil = request.json['oil']
+        crashes = request.json['crashes']
+        rate = request.json['rate']
+        detail = CarRenter.Return_Car(id, oil, crashes, rate, account)
+        if detail == False:
+            abort(400)
+        else:
+            return jsonify(detail), 201
+
+@app.route('/TEST', methods=['GET'])
+def test():
+    thing = {
+        'is_rented': CarRenter.Is_Rented(0),
+        'Balance1': CarRenter.Get_Balance(1),
+        'Balance2': CarRenter.Get_Balance(2)
     }
-    CarRenter.Create_Vtoken(request.json['name'], request.json['age'], request.json['owner'])
-    return jsonify(Car), 201
+    return jsonify(thing)
 
 
 

@@ -7,7 +7,7 @@ contract CarBase is Ownable{
     using SafeMath for uint256;
     using SafeMath16 for uint16;
 
-    event RentCar(uint _id, address _renter);
+    event RentCar(uint _id, address _renter, address _owner);
     event NewCar(uint _id, string _name);
     event Price(uint _price);
     //event AvailableNum(uint16 _num);
