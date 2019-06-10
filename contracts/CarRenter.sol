@@ -30,21 +30,7 @@ contract CarRenter is CarHelper, CarOwnership {
         to_owner = Calculate_Price(_tokenId, _oil, crashes);
         emit Price(to_owner);
         return to_owner;
-        /*
-        if (now <= cars[_tokenId].rent_time && crashes == 0) { // no crash and return on time
-            to_renter = 1;
-            to_owner = cars[_tokenId].price + _oil * 50;
-            msg.sender.transfer(1 ether);
-            cars[_tokenId].owner.transfer(to_owner * 1 szabo);
-        }
-        else {
-            to_owner = cars[_tokenId].price + _oil * 50;
-            if (crashes != 0){
-                to_owner += crashes * 10;
-            }
-            cars[_tokenId].owner.transfer(to_owner * 1 szabo);
-        }
-        */
+        
     }
 
     function Pay_Owner(uint _tokenId) public payable {

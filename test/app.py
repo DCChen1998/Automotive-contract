@@ -41,10 +41,33 @@ def new_user():
     return jsonify(user)
     
 
-#get /car
+#get
+#use:curl -i http://localhost:5000/GET/cars
 @app.route('/GET/cars', methods=['GET'])
 def get_cars():
     return jsonify(CarRenter.Get_Available_Car(users[0]['account']))
+
+#authorize: called by car to make sure the account == renter
+#use:curl -i -H "Content-Type: application/json" -X POST -d {"id":1, "account": "blabla"} http://localhost:5000/POST/car/authorize
+@app.route('/POST/car/authorize', methods=['POST'])
+def authorize():
+    if not request.json or not 'id' in request.json or not 'account' in request.json:
+        abort(400)
+    if not is_registered(request.json['account']):
+        abort(401)
+    if CarRenter.Is_Rented(request.json['id']) == False:
+        abort(400)
+    renter = CarRenter.Get_Renter(request.json['id'])
+    if renter == request.json['account']:
+        message = {
+            'authorized': True
+        }
+        return jsonify(message)
+    else:
+        message = {
+            'authorized': False
+        }
+        return jsonify(message)
 
 #use:curl -i -H "Content-Type: application/json" -X POST -d '{"name":"blabla", "age":87, "owner":"account"}' http://localhost:5000/POST/car
 @app.route('/POST/car', methods=['POST'])

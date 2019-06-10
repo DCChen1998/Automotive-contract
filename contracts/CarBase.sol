@@ -42,12 +42,6 @@ contract CarBase is Ownable{
         AvailableCarNum++;
         emit NewCar(id, _name);
 
-        /*Car memory newcar = Car(_name, now, 0, _age, 10, 0, false);
-        VToken memory vtoken = VToken(newcar, msg.sender, msg.sender);
-        uint16 id = uint16(vtokens.push(vtoken) - 1);// add to array and update id value
-        vtokens[id].car.id = id;
-        car2owner[id] = msg.sender;
-        emit NewVtoken(id, _name);*/
     }
 
     function Is_Rented(uint _id) public view returns (bool){
@@ -56,10 +50,9 @@ contract CarBase is Ownable{
         return (cars[_id].owner != cars[_id].renter);
     }
 
-    /*function Get_All_Cars() external view returns (Car[] memory cars2) {
-        cars2 = cars;
-        return cars;
-    }*/
+    function Get_Renter(uint _id) public view returns(address) { //called when is rented is true
+        return cars[_id].renter;
+    }
 
     function Get_Available_Car_Num() external view returns(uint16) {
         //emit AvailableNum(AvailableCarNum);
@@ -81,51 +74,5 @@ contract CarBase is Ownable{
         }
         return to_owner;
     }
-/*
-    function Rent_Car(uint _id) public payable {
-        require(Is_Rented(_id) == false && msg.value == 1 ether);
-
-        ownerTokenCount[cars[_id].owner]--;
-
-        cars[_id].renter = msg.sender;
-        cars[_id].rent_time = now + basic_renttime * 60;
-        cars[_id].is_rented = true;
-        cars[_id].owner.transfer(1 ether); //for bail
-
-        emit RentCar(_id, msg.sender);
-
-        require(Is_Rented(_id) == false && msg.value >= 1 ether);
-
-        vtokens[_id].renter = msg.sender;
-        vtokens[_id].car.rent_time = now + basic_renttime * 60;
-        vtokens[_id].car.is_rented = true;
-
-        vtokens[_id].owner.transfer(1 ether); // for bail
-
-        emit RentCar(_id, msg.sender);
-    }
-
-    function Return_Car(uint _id, uint _oil) public payable {
-        require(Is_Rented(_id) && msg.sender == vtokens[_id].renter);
-        uint toOwner;
-        uint toRenter;
-
-        if (vtokens[_id].car.rent_time >= now) {
-            toOwner = vtokens[_id].car.price + _oil * 50;
-            toRenter = 1;
-            vtokens[_id].owner.transfer(toOwner * 1 szabo);
-            vtokens[_id].renter.transfer(toRenter * 1 ether);
-        }
-        else {
-            toOwner = vtokens[_id].car.price + _oil * 50;
-            toRenter = 0; //penalty for delay
-            vtokens[_id].owner.transfer(toOwner * 1 szabo);
-        }
-
-        vtokens[_id].car.is_rented = false;
-        vtokens[_id].renter = vtokens[_id].owner;
-
-    }
-    */
 
 }

@@ -95,6 +95,11 @@ def Get_Available_Car(_customer):
         car_list.append({'ID': logs[i]['args']['_id'], 'Name': logs[i]['args']['_name'], 'Rate': rate})
     return car_list
     
+def Get_Renter(_id):
+    transact_hash = contract_instance.functions.Get_Renter(_id).call()
+    print(type(transact_hash))
+    print(transact_hash)
+    return transact_hash
 '''
 print(Web3.fromWei(web3.eth.getBalance(owner), 'ether'))
 print(Web3.fromWei(web3.eth.getBalance(customer), 'ether'))
