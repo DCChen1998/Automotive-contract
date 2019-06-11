@@ -13,8 +13,10 @@ users.append(reserve_account)
 
 # check if the account has been registered
 def is_registered(account):
-    for user in users:
+    for i, user in enumerate(users):
         if user['account'] == account:
+            global count
+            count = i
             return True
         else:
             continue
@@ -39,6 +41,17 @@ def new_user():
     }
     users.append(user)
     return jsonify(user)
+
+@app.route('/POST/user/balance', methods=['POST'])
+def get_balance():
+    if not request.json or not 'account' in request.json:
+        abort(400)
+    if not is_registered(request.json['account']): #global variable count is set
+        abort(401)
+    balance = {
+        'balance': CarRenter.Get_Balance(count)
+    }
+    return jsonify(balance)
     
 
 #get
@@ -48,7 +61,7 @@ def get_cars():
     return jsonify(CarRenter.Get_Available_Car(users[0]['account']))
 
 #authorize: called by car to make sure the account == renter
-#use:curl -i -H "Content-Type: application/json" -X POST -d {"id":1, "account": "blabla"} http://localhost:5000/POST/car/authorize
+#use:curl -i -H "Content-Type: application/json" -X POST -d {"id":0, "account": "blabla"} http://localhost:5000/POST/car/authorize
 @app.route('/POST/car/authorize', methods=['POST'])
 def authorize():
     if not request.json or not 'id' in request.json or not 'account' in request.json:
