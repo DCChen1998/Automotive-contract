@@ -5,13 +5,13 @@ import "./SafeMath.sol";
 contract CarBase is Ownable{
 
     using SafeMath for uint256;
-    using SafeMath16 for uint16;
+    using SafeMath16 for uint;
 
     event RentCar(uint _id, address _renter, address _owner);
     event NewCar(uint _id, string _name);
     event Price(uint _price);
-    //event AvailableNum(uint16 _num);
-    event AvailableCar(uint _id, string _name, uint16 _rate_sum, uint16 _rate_num);
+    //event AvailableNum(uint _num);
+    event AvailableCar(uint _id, string _name, uint _rate_sum, uint _rate_num);
 
     mapping (uint => address) car2owner;
     mapping (address => uint) ownerTokenCount;
@@ -22,17 +22,17 @@ contract CarBase is Ownable{
         address payable renter;
         uint rent_time; // now + expected renting time
         uint id;
-        uint16 age;
-        uint16 price;
-        uint16 crash_number;
-        uint16 rate_sum;
-        uint16 rate_num;
+        uint age;
+        uint price;
+        uint crash_number;
+        uint rate_sum;
+        uint rate_num;
     }
 
     Car[] cars;
-    uint16 AvailableCarNum = 0;
+    uint AvailableCarNum = 0;
 
-    function Add_Car(string memory _name, uint16 _age, address payable _owner) internal { // call by car wallet
+    function Add_Car(string memory _name, uint _age, address payable _owner) internal { // call by car wallet
         
         Car memory newcar = Car(_name, _owner, _owner, now, 0, _age, 10, 0, 0, 0);
         uint id = cars.push(newcar) - 1;
@@ -54,7 +54,7 @@ contract CarBase is Ownable{
         return cars[_id].renter;
     }
 
-    function Get_Available_Car_Num() external view returns(uint16) {
+    function Get_Available_Car_Num() external view returns(uint) {
         //emit AvailableNum(AvailableCarNum);
         return AvailableCarNum;
     }
@@ -67,7 +67,7 @@ contract CarBase is Ownable{
         }
     }
 
-    function Calculate_Price(uint _tokenId, uint _oil, uint16 crashes) internal view returns(uint) {
+    function Calculate_Price(uint _tokenId, uint _oil, uint crashes) internal view returns(uint) {
         uint to_owner = cars[_tokenId].price + _oil * 50;
         if (crashes > 0) {
             to_owner += 50 * crashes;

@@ -3,9 +3,9 @@ pragma solidity ^0.5.0;
 import "./CarHelper.sol";
 
 contract CarRenter is CarHelper, CarOwnership {
-    uint16 basic_renttime = 1;
+    uint basic_renttime = 1;
     
-    function Create_Vtoken(string memory _name, uint16 _age) public { //called by car wallet
+    function Create_Vtoken(string memory _name, uint _age) public { //called by car wallet
         Add_Car(_name, _age, msg.sender);
     }
     
@@ -18,7 +18,7 @@ contract CarRenter is CarHelper, CarOwnership {
         emit RentCar(_tokenId, msg.sender, cars[_tokenId].owner);
     }
 
-    function Return_Car(uint _tokenId, uint _oil, uint16 crashes, uint16 rate) public /*payable*/ returns(uint) {
+    function Return_Car(uint _tokenId, uint _oil, uint crashes, uint rate) public /*payable*/ returns(uint) {
         require(msg.sender == cars[_tokenId].renter, "Failed to return a car!");
         uint to_owner;
         //uint to_renter; //return the bail

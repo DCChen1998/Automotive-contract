@@ -12,7 +12,7 @@ contract CarHelper is CarBase {
         cars[_id].name = _newname;
     }
 
-    function ChangeAge(uint _id, uint16 _newage) public OnlyOwnerOf(_id) {
+    function ChangeAge(uint _id, uint _newage) public OnlyOwnerOf(_id) {
         cars[_id].age = _newage;
     }
 }
