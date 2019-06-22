@@ -5,6 +5,7 @@ app = Flask(__name__)
 #users = [{'owner': CarRenter.owner, 'customer': CarRenter.customer}]
 users = []
 count = 0 #the count of assigned ganache account
+car_count = 0
 reserve_account = {
     'name': 'reserved',
     'account': CarRenter.Get_Unused_Account(0)
@@ -88,11 +89,14 @@ def create_vtoken():
     if not request.json or not 'name' in request.json or not 'age' in request.json or not 'owner' in request.json:
         abort(400)
     if is_registered(request.json['owner']):
+        global car_count
         Car = {
             'name': request.json['name'],
             'age': request.json['age'],
-            'owner': request.json['owner']
+            'owner': request.json['owner'],
+            'id': car_count
         }
+        car_count += 1
         CarRenter.Create_Vtoken(Car['name'], Car['age'], Car['owner'])
         return jsonify(Car), 201
     else:
