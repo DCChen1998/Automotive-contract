@@ -6,7 +6,7 @@ from web3.contract import ConciseContract
 #from web3utils.currency import to_wei
 import json
 
-with open('.././build/contracts/CarRenter.json' , 'r') as f:
+with open('/Users/ulf/Desktop/Automative-car/build/contracts/CarRenter.json' , 'r') as f:
     data = json.loads(f.read())
 
 abi = data['abi']
@@ -20,7 +20,7 @@ config = {
     
 }
 
-web3 = Web3(HTTPProvider('http://localhost:8545'))
+web3 = Web3(HTTPProvider('http://127.0.0.1:8545'))
 #owner = web3.eth.accounts[0]
 #customer = web3.eth.accounts[1]
 contract_instance = web3.eth.contract(address=config['address'], abi=config['abi']) 

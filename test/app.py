@@ -122,7 +122,7 @@ def rent_car():
 def return_car():
     if not request.json or not 'id' in request.json or not 'account' in request.json or not 'oil' in request.json or not 'crashes' in request.json or not 'rate' in request.json:
         abort(400)
-    if is_registered(request.json['account']) and CarRenter.Is_Rented(request.json['id']) == True:
+    if is_registered(request.json['account']) and CarRenter.Is_Rented(request.json['id']) == True and CarRenter.Get_Renter(request.json['id']) == request.json['account']:
         id = request.json['id']
         account = request.json['account']
         oil = request.json['oil']
@@ -133,6 +133,8 @@ def return_car():
             abort(400)
         else:
             return jsonify(detail), 201
+    else:
+        abort(401)
 
 @app.route('/TEST', methods=['GET'])
 def test():
