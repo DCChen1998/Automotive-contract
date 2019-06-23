@@ -11,7 +11,16 @@ reserve_account = {
     'account': CarRenter.Get_Unused_Account(0)
 }
 users.append(reserve_account)
-
+owner = {
+    'name': 'owner',
+    'account': CarRenter.Get_Unused_Account(1)
+}
+renter = {
+    'name': 'renter',
+    'account': CarRenter.Get_Unused_Account(2)
+}
+users.append(owner)
+users.append(renter)
 # check if the account has been registered
 def is_registered(account):
     for i, user in enumerate(users):
@@ -101,6 +110,8 @@ def create_vtoken():
         return jsonify(Car), 201
     else:
         abort(401)
+
+CarRenter.Create_Vtoken('haha', 2, owner['account'])
 
 #rent car
 #use:curl -i -H "Content-Type: application/json" -X PUT -d '{"id":0, "account":"account"}' http://localhost:5000/PUT/car/rent
