@@ -58,10 +58,10 @@ def get_balance():
         abort(400)
     if not is_registered(request.json['account']): #global variable count is set
         abort(401)
-    balance = {
-        'balance': CarRenter.Get_Balance(count)
-    }
-    return jsonify(balance)
+    #balance = {
+    #    'balance': CarRenter.Get_Balance(count)
+    #}
+    return jsonify(CarRenter.Get_Balance(count))
     
 
 #get

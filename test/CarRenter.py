@@ -31,7 +31,8 @@ def Get_Unused_Account(count):
     return web3.eth.accounts[count]
 
 def Get_Balance(count):
-    return Web3.fromWei(web3.eth.getBalance(web3.eth.accounts[count]), 'ether')
+    #return Web3.fromWei(web3.eth.getBalance(web3.eth.accounts[count]), 'ether')
+    return {'balance': Web3.fromWei(web3.eth.getBalance(web3.eth.accounts[count]), 'ether')}
 
 def Create_Vtoken(_name, _age, _owner):
     transact_hash = contract_instance.functions.Create_Vtoken(_name, _age).transact({'from': _owner})
