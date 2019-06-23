@@ -45,23 +45,27 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"name":"renter"}' http:
 ```
 curl -i http://localhost:5000/GET/users
 ```
-4. Create car
+4. Check account's balance(simplejson package required)
+```
+curl -i -H "Content-Type: application/json" -X POST -d '{"account":"your account here"}' http://localhost:5000/POST/user/balance
+```
+5. Create car
 ```
 curl -i -H "Content-Type: application/json" -X POST -d '{"name":"haha", "age":2, "owner":"owner's address"}' http://localhost:5000/POST/car
 ```
-5. Check all cars can rent
+6. Check all cars can rent
 ```
 curl -i http://localhost:5000/GET/cars
 ```
-6. Rent car
+7. Rent car
 ```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"id":0, "account":"renter's address"}' http://localhost:5000/PUT/car/rent
 ```
-7. Check whether the user is the renter
+8. Check whether the user is the renter
 ```
 curl -i -H "Content-Type: application/json" -X POST -d '{"id":0, "account":"address"}' http://localhost:5000/POST/car/authorize
 ```
-8. Return car
+9. Return car
 ```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"id":0, "account":"renter's address", "oil":10, "crashes":0, "rate":5}' http://localhost:5000/PUT/car/return
 ```
