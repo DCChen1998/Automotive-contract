@@ -35,7 +35,16 @@ def is_registered(account):
 #get /user
 @app.route('/GET/users', methods=['GET'])
 def get_users():
-    return jsonify(users)
+    all_users = []
+    for i in range(len(users)):
+        user = {
+            'name': users[i]['name'],
+            'account': users[i]['account'],
+            'balance': CarRenter.Get_Balance(i)
+        }
+        all_users.append(user)
+    return jsonify(all_users)
+    #return jsonify(users)
 
 #add new user and assign an account to him
 #use:curl -i -H "Content-Type: application/json" -X POST -d '{"name":"blabla"}' http://localhost:5000/POST/user
@@ -58,10 +67,10 @@ def get_balance():
         abort(400)
     if not is_registered(request.json['account']): #global variable count is set
         abort(401)
-    #balance = {
-    #    'balance': CarRenter.Get_Balance(count)
-    #}
-    return jsonify(CarRenter.Get_Balance(count))
+    balance = {
+        'balance': CarRenter.Get_Balance(count)
+    }
+    return jsonify(balance)
     
 
 #get
