@@ -128,7 +128,7 @@ CarRenter.Create_Vtoken('haha', 2, owner['account'])
 def rent_car():
     if not request.json or not 'id' in request.json or not 'account' in request.json:
         abort(400)
-    if is_registered(request.json['account']) and CarRenter.Is_Rented(request.json['id']) == False:
+    if is_registered(request.json['account']) and CarRenter.Is_Rented(request.json['id']) == False and CarRenter.Get_Renter(request.json['id']) != request.json['account']:
         id = request.json['id']
         account = request.json['account']
         detail = CarRenter.Rent_Car(id, account)
