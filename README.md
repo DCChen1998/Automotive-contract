@@ -35,7 +35,7 @@ truffle migration
 ## Test
 Be sure you are now in `./test`.  
 ### simple test
-1. Get cars and users Info: This will return cars info.
+1. Get cars and users Info: This will return users and cars info.
 ```
 sh getInfo.sh
 ```
@@ -44,7 +44,7 @@ sh getInfo.sh
 sh newCar.sh <an account address>
 ```
 
-### other command
+### other commands
 
 Test on another terminal and see test_cmd.txt. 
 
