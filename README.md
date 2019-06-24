@@ -34,7 +34,7 @@ truffle migration
 
 ## Test
 Be sure you are now in `./test`.  
-###simple test
+### simple test
 1. get cars and users Info: `sh getInfo.sh`.  
 This will return cars info.
 2. create cars: `sh newCar.sh <an account address>`.  
