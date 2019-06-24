@@ -6,7 +6,7 @@ from web3.contract import ConciseContract
 #from web3utils.currency import to_wei
 import json
 
-with open('../build/contracts/CarRenter.json' , 'r') as f:
+with open('/Users/ulf/Desktop/Automative-car/build/contracts/CarRenter.json' , 'r') as f:
     data = json.loads(f.read())
 
 abi = data['abi']
