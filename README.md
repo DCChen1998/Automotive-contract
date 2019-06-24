@@ -20,10 +20,10 @@ npm install -g truffle
 ```
 ganache-cli
 ```
-3. run `$sh start.sh`, or run the command below.
+3. run `$sh start.sh` on another terminal, or follow the below steps.
 
 ### Compile and Deploy Contract
-Compile on another terminal.
+Compile on another terminal.  
 ```
 truffle migration
 ```
@@ -35,13 +35,13 @@ truffle migration
 ## Test
 Be sure you are now in `./test`.  
 ### simple test
-1. Get cars and users Info: This will return users and cars info.
+1. Get cars and users Info: This will return cars and users info.  
 ```
 sh getInfo.sh
 ```
-2. Create cars: This shell script will create 6 cars named ulala and yee[1-5].
+2. Create cars: This shell script will create 6 cars named ulala and yee[1-5].  
 ```
-sh newCar.sh <an account address>
+sh newCar.sh <owner's address>
 ```
 
 ### other commands
@@ -52,35 +52,35 @@ Test on another terminal and see test_cmd.txt.
 ```
 curl -i -H "Content-Type: application/json" -X POST -d '{"name":"owner"}' http://127.0.0.1:5000/POST/user
 ```
-2. Create renter
+2. Create renter 
 ```
 curl -i -H "Content-Type: application/json" -X POST -d '{"name":"renter"}' http://127.0.0.1:5000/POST/user
 ```
-3. Check all current users
+3. Check all current users  
 ```
 curl -i http://127.0.0.1:5000/GET/users
 ```
-4. Check account's balance(simplejson package required)
+4. Check account's balance(simplejson package required)  
 ```
 curl -i -H "Content-Type: application/json" -X POST -d '{"account":"your account here"}' http://127.0.0.1:5000/POST/user/balance
 ```
-5. Create car
+5. Create car  
 ```
 curl -i -H "Content-Type: application/json" -X POST -d '{"name":"haha", "age":2, "owner":"owner's address"}' http://127.0.0.1:5000/POST/car
 ```
-6. Check all cars can rent
+6. Check all cars can rent  
 ```
 curl -i http://127.0.0.1:5000/GET/cars
 ```
-7. Rent car
+7. Rent car  
 ```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"id":0, "account":"renter's address"}' http://127.0.0.1:5000/PUT/car/rent
 ```
-8. Check whether the user is the renter
+8. Check whether the user is the renter  
 ```
 curl -i -H "Content-Type: application/json" -X POST -d '{"id":0, "account":"address"}' http://127.0.0.1:5000/POST/car/authorize
 ```
-9. Return car
+9. Return car  
 ```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"id":0, "account":"renter's address", "oil":10, "crashes":0, "rate":5}' http://127.0.0.1:5000/PUT/car/return
 ```
