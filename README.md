@@ -35,10 +35,14 @@ truffle migration
 ## Test
 Be sure you are now in `./test`.  
 ### simple test
-1. get cars and users Info: `sh getInfo.sh`.  
-This will return cars info.
-2. create cars: `sh newCar.sh <an account address>`.  
-This shell script will create 6 cars named ulala and yee[1-5].
+1. Get cars and users Info: This will return cars info.
+```
+sh getInfo.sh
+```
+2. Create cars: This shell script will create 6 cars named ulala and yee[1-5].
+```
+sh newCar.sh <an account address>
+```
 
 ### other command
 
