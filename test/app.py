@@ -120,7 +120,7 @@ def create_vtoken():
     else:
         abort(401)
 
-CarRenter.Create_Vtoken('haha', 2, owner['account'])
+#CarRenter.Create_Vtoken('haha', 2, owner['account'])
 
 #rent car
 #use:curl -i -H "Content-Type: application/json" -X PUT -d '{"id":0, "account":"account"}' http://localhost:5000/PUT/car/rent
